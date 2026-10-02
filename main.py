@@ -35,7 +35,7 @@ BULLET_SPEED = 8
 
 MAX_HEALTH = 10
 MAX_BULLETS = 3
-
+PLAYER_FIRE_COOLDOWN = 15
 
 class Spaceship:
     def __init__(self, x, y, colour, facing_right):
@@ -163,6 +163,7 @@ def reset_game():
 
 def main():
     player, ai, player_bullets, ai_bullets, ai_fire_timer = reset_game()
+    player_fire_timer = 0
 
     running = True
     game_over = False
@@ -186,6 +187,7 @@ def main():
 
         if not game_over:
             # -------------------------
+            # Controls: WASD = Move | Left Mouse Button = Fire
             # Player movement
             # -------------------------
             keys = pygame.key.get_pressed()
@@ -205,9 +207,18 @@ def main():
             player.move(dx, dy)
 
             # Player firing
-            if keys[pygame.K_LCTRL] and len(player_bullets) < MAX_BULLETS:
-                if not player_bullets:
-                    player_bullets.append(create_bullet(player, 1))
+            mouse_buttons = pygame.mouse.get_pressed()
+
+            if player_fire_timer > 0:
+                player_fire_timer -= 1
+
+            if (
+                mouse_buttons[0]
+                and player_fire_timer == 0
+                and len(player_bullets) < MAX_BULLETS
+            ):
+                player_bullets.append(create_bullet(player, 1))
+                player_fire_timer = PLAYER_FIRE_COOLDOWN
 
             # -------------------------
             # Basic AI movement
