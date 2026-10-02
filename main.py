@@ -36,6 +36,7 @@ BULLET_SPEED = 8
 MAX_HEALTH = 10
 MAX_BULLETS = 3
 PLAYER_FIRE_COOLDOWN = 15
+AI_TRACKING_DEAD_ZONE = 25
 
 class Spaceship:
     def __init__(self, x, y, colour, facing_right):
@@ -221,11 +222,14 @@ def main():
                 player_fire_timer = PLAYER_FIRE_COOLDOWN
 
             # -------------------------
-            # Basic AI movement
+            # Smarter AI movement
             # -------------------------
-            if ai.rect.centery < player.rect.centery:
+            # Smarter AI movement
+            vertical_difference = player.rect.centery - ai.rect.centery
+
+            if vertical_difference > AI_TRACKING_DEAD_ZONE:
                 ai.move(0, SHIP_SPEED // 2)
-            elif ai.rect.centery > player.rect.centery:
+            elif vertical_difference < -AI_TRACKING_DEAD_ZONE:
                 ai.move(0, -(SHIP_SPEED // 2))
 
             # -------------------------
